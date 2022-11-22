@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package com.husnainjaved.boilerplate.components;
+
+option go_package = "boilerplate/proto/components";
+option swift_prefix = "CM";
+
+import "components/components.proto";
+
+message Screen {
+  components.ScreenType type = 1;
+
+  string title = 2;
+  string heading = 3;
+  string subheading = 4;
+
+  components.ActionGroup actions_top = 5;
+
+  oneof content {
+    LoginScreen login_Screen = 6;
+    SignupScreen signup_screen = 7;
+    ResetPasswordScreen reset_password_screen = 8;
+  }
+}
+
+message LoginScreen {
+  components.Form form = 1;
+}
+
+message SignupScreen {
+  components.Form form = 1;
+}
+
+message ResetPasswordScreen {
+  components.Form form = 1;
+}

@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package com.husnainjaved.boilerplate.auth;
+
+option go_package = "boilerplate/proto/auth";
+option swift_prefix = "AU";
+
+import "components/components.proto";
+import "components/screens.proto";
+
+enum AuthMethod {
+  AUTH_METHOD_UNSPECIFIED = 0;
+  AUTH_METHOD_EMAIL = 1;
+  AUTH_METHOD_PHONE = 2;
+}
+
+message AuthSession {
+  string token = 1;
+  int64 expires_at = 2;
+}
+
+enum SignupStep {
+  SIGNUP_STEP_UNSPECIFIED = 0;
+  SIGNUP_STEP_INITIAL = 1;
+  SIGNUP_STEP_SUCCESS = 2;
+}
+
+message SignupRequest {
+  SignupStep step = 1;
+
+  AuthMethod auth_method = 2;
+
+  string password = 3;
+
+  oneof identifier {
+    string email = 4;
+    string phone = 5;
+  }
+}
+
+message SignupResponse {
+  SignupStep step = 1;
+  components.Screen screen = 2;
+  AuthMethod auth_method = 3;
+  AuthSession auth_session = 4;
+  components.Action redirect = 5;
+}
+
+enum LoginStep {
+  LOGIN_STEP_UNSPECIFIED = 0;
+  LOGIN_STEP_INITIAL = 1;
+  LOGIN_STEP_SUBMIT_OTP = 2;
+  LOGIN_STEP_SUCCESS = 3;
+}
+
+message LoginRequest {
+  LoginStep step = 1;
+
+  int32 user_type = 2;
+
+  AuthMethod auth_method = 3;
+
+  string grant_id = 4;
+  string otp = 5;
+
+  string password = 6;
+
+  oneof identifier {
+    string email = 7;
+    string phone = 8;
+  }
+}
+
+message LoginResponse {
+  LoginStep step = 1;
+  components.Screen screen = 2;
+  string grant_id = 3;
+  AuthMethod auth_method = 4;
+  AuthSession auth_session = 5;
+  components.Action redirect = 6;
+}
+
+enum ResetPasswordStep {
+  RESET_PASSWORD_STEP_UNSPECIFIED = 0;
+  RESET_PASSWORD_STEP_INITIAL = 1;
+  RESET_PASSWORD_STEP_SUBMIT_OTP = 2;
+  RESET_PASSWORD_STEP_RESEND = 3;
+  RESET_PASSWORD_STEP_NEW_PASSWORD = 5;
+  RESET_PASSWORD_STEP_SUCCESS = 6;
+}
+
+message ResetPasswordRequest {
+  ResetPasswordStep step = 1;
+
+  int32 user_type = 2;
+
+  AuthMethod auth_method = 3;
+
+  string password = 4;
+
+  string grant_id = 5;
+  int64 next_otp_send = 6;
+  string otp = 7;
+
+  oneof identifier {
+    string email = 8;
+    string phone = 9;
+  }
+}
+
+message ResetPasswordResponse {
+  ResetPasswordStep step = 1;
+  components.Screen screen = 2;
+  string grant_id = 3;
+  int64 next_otp_send = 4;
+  AuthMethod auth_method = 5;
+  components.Action redirect = 6;
+}

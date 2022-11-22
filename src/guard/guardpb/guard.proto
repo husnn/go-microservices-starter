@@ -1,0 +1,65 @@
+syntax = "proto3";
+package guardpb;
+option go_package = "boilerplate/guard/guardpb";
+
+import "google/protobuf/timestamp.proto";
+
+service Guard {
+  rpc Require2FA(Require2FARequest) returns (Require2FAResponse) {}
+  rpc SubmitOTP(SubmitOTPRequest) returns (SubmitOTPResponse) {}
+  rpc ResendOTP(ResendOTPRequest) returns (ResendOTPResponse) {}
+}
+
+enum Action {
+  ActionUnknown = 0;
+  ActionLogin = 1;
+}
+
+message Grant {
+  string id = 1;
+  int64 user_id = 2;
+  Action action = 3;
+  int64 foreign_id = 4;
+  string ip = 5;
+  string user_agent = 6;
+  int64 otp_id = 7;
+  string token = 8;
+  bool void = 9;
+  int64 voided_by_id = 10;
+  google.protobuf.Timestamp finalised_at = 11;
+  google.protobuf.Timestamp expires_at = 12;
+  google.protobuf.Timestamp created_at = 13;
+}
+
+message Require2FARequest {
+  int64 user_id = 1;
+  Action action = 2;
+  int64 foreign_id = 3;
+  string ip = 4;
+  string user_agent = 5;
+}
+
+message Require2FAResponse {
+  string grant_id = 1;
+  google.protobuf.Timestamp next_send = 2;
+}
+
+message SubmitOTPRequest {
+  string grant_id = 1;
+  string ip = 2;
+  string code = 3;
+}
+
+message SubmitOTPResponse {
+  Grant grant = 1;
+  google.protobuf.Timestamp next_send = 2;
+}
+
+message ResendOTPRequest {
+  string grant_id = 1;
+  string ip = 2;
+}
+
+message ResendOTPResponse {
+  google.protobuf.Timestamp next_send = 1;
+}

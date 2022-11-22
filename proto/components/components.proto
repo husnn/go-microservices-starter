@@ -1,0 +1,159 @@
+syntax = "proto3";
+
+package com.husnainjaved.boilerplate.components;
+
+option go_package = "boilerplate/proto/components";
+option swift_prefix = "CM";
+
+enum ScreenType {
+  SCREEN_UNSPECIFIED = 0;
+  SCREEN_SIGNUP = 1;
+  SCREEN_LOGIN = 2;
+  SCREEN_RESET_PASSWORD = 3;
+}
+
+enum Position {
+  POSITION_UNSPECIFIED = 0;
+  POSITION_START = 1;
+  POSITION_MIDDLE = 2;
+  POSITION_END = 3;
+  POSITION_FILL = 4;
+}
+
+message Text {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_H1 = 1;
+    TYPE_H2 = 2;
+    TYPE_H3 = 3;
+    TYPE_BODY = 4;
+    TYPE_LABEL = 5;
+  }
+
+  Type type = 1;
+  Position alignment = 2;
+
+  string value = 3;
+}
+
+enum Element {
+  ELEMENT_UNSPECIFIED = 0;
+  ELEMENT_BUTTON = 1;
+  ELEMENT_LINK = 2;
+  ELEMENT_TEXT = 3;
+  ELEMENT_TOGGLE_BUTTON = 4;
+}
+
+enum Style {
+  STYLE_UNSPECIFIED = 0;
+  STYLE_PRIMARY = 1;
+  STYLE_SECONDARY = 2;
+  STYLE_TERTIARY = 3;
+}
+
+message Action {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_ENDPOINT = 1;
+    TYPE_REDIRECT = 2;
+    TYPE_BACK = 3;
+    TYPE_NEXT = 4;
+    TYPE_TOGGLE = 5;
+  }
+
+  enum Endpoint {
+    ENDPOINT_UNSPECIFIED = 0;
+    ENDPOINT_AUTH_SIGNUP = 1;
+    ENDPOINT_AUTH_LOGIN = 2;
+    ENDPOINT_AUTH_SUBMIT_OTP = 3;
+    ENDPOINT_AUTH_REQUEST_OTP = 4;
+    ENDPOINT_AUTH_RESET_PASSWORD = 5;
+  }
+
+  Type type = 1;
+  Style style = 2;
+  Element element = 3;
+
+  string text = 4;
+
+  Endpoint endpoint = 6;
+  ScreenType screen = 7;
+  string url = 8;
+  Action next = 9;
+  int64 next_after = 10;
+  bool toggled = 11;
+}
+
+message GroupPosition {
+  Position pos_x = 1;
+  Position pos_y = 2;
+  bool is_row = 3;
+  bool reverse = 4;
+}
+
+message ActionGroup {
+  repeated Action actions = 1;
+  GroupPosition position = 2;
+}
+
+message Input {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TEXT = 1;
+    EMAIL = 2;
+    PHONE = 3;
+    PASSWORD = 4;
+    NUMERIC = 5;
+    OTP = 6;
+    DATE_SHORT = 7;
+  }
+
+  enum Transformation {
+    UNKNOWN_TRANSFORMATION = 0;
+    CAPITALISED = 1;
+    LOWERCASE = 2;
+    UPPERCASE = 3;
+  }
+
+  message Validation {
+    int64 min = 1;
+    int64 max = 2;
+    int32 min_length = 3;
+    int32 max_length = 4;
+    string regex = 5;
+  }
+
+  Type type = 1;
+
+  string name = 2;
+  string label = 3;
+  string placeholder = 4;
+  string value = 5;
+  string description = 6;
+
+  string error = 7;
+
+  Validation validation = 8;
+  Transformation text_transformation = 9;
+}
+
+message Form {
+  message Group {
+    repeated Input inputs = 1;
+    string error = 2;
+
+    repeated Action actions = 3;
+
+    GroupPosition position = 4;
+  }
+
+  string heading = 1;
+  string subheading = 2;
+
+  repeated Group groups = 3;
+  string error = 4;
+
+  Text footer = 5;
+
+  repeated Action actions = 6;
+}

@@ -1,0 +1,65 @@
+syntax = "proto3";
+package authpb;
+option go_package = "boilerplate/auth/authpb";
+
+service Auth {
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc SubmitOTP(SubmitOTPRequest) returns (SubmitOTPResponse) {}
+  rpc LoginUnsafe(LoginUnsafeRequest) returns (LoginUnsafeResponse) {}
+  rpc ValidateSession(ValidateSessionRequest) returns (ValidateSessionResponse) {}
+  rpc Signout(SignoutRequest) returns (SignoutResponse) {}
+}
+
+message LoginRequest {
+  int32 user_type = 1;
+  oneof identifier {
+    string email = 2;
+    string phone = 3;
+  }
+  string password = 4;
+  string ip = 5;
+  string user_agent = 6;
+}
+
+message LoginResponse {
+  oneof id {
+    string grant_id = 1;
+    string session_id = 2;
+  }
+}
+
+message SubmitOTPRequest {
+  string grant_id = 1;
+  string ip = 2;
+  string user_agent = 3;
+  string code = 4;
+}
+
+message SubmitOTPResponse {
+  string session_id = 1;
+}
+
+message LoginUnsafeRequest {
+  int64 user_id = 1;
+  string ip = 2;
+  string user_agent = 3;
+}
+
+message LoginUnsafeResponse {
+  string session_id = 1;
+}
+
+message ValidateSessionRequest {
+  string session_id = 1;
+  string ip = 2;
+}
+
+message ValidateSessionResponse {
+  int64 user_id = 1;
+}
+
+message SignoutRequest {
+  string session_id = 1;
+}
+
+message SignoutResponse {}
